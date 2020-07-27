@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+#  this is my attempt at trying to make a fetch using only posix shell
+#  and as little if none external utilities as I can.
+#
+
+
+## Terminal
+ppid() {
+	while read -r line; do
+		case $line in
+			PPid*) echo "${line##*:?}"; break;;
+		esac
+	done < /proc/"$1"/status
+}
+
+while [ ! "$term" ]; do
+	read -r name < "/proc/${ppid:=$$}/comm"
+	case $name in
+		*sh) ;;
+		"${0##*/}") ;;
+		*[Ll]ogin*|*init*) term=linux;;
+		*) term="$name";;
+	esac
+	ppid=$(ppid "$ppid")
+done
+
+## Distro
+. /etc/os-release   # lol EZ
+
+## Packages
+# horribly inefficient, I know.
+command -v pacman-key >/dev/null 2>&1 && {
+	pkgs=0
+	for i in /var/lib/pacman/local/*; do
+		pkgs=$(( pkgs + 1 ))
+	done
+}
+
+command -v xbps-install >/dev/null 2>&1 && {
+	pkgs=0
+	for i in /var/db/xbps/*; do
+		pkgs=$(( pkgs + 1 ))
+	done
+}
+
+print() {
+	printf '\033[38;05;16m%8s\033[0m | %s\n' "$1" "$2"
+}
+
+print os "$ID"
+print sh "${SHELL##*/}"
+print term "$term"
+[ "$pkgs" ] && print "pkgs" "$pkgs"
