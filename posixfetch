@@ -3,6 +3,8 @@
 #  this is my attempt at trying to make a fetch using only posix shell
 #  and as little if none external utilities as I can.
 #
+# shellcheck disable=SC2034
+#
 
 
 ## Terminal
@@ -30,14 +32,14 @@ done
 
 ## Packages
 # horribly inefficient, I know.
-command -v pacman-key >/dev/null 2>&1 && {
+[ -d /var/lib/pacman/local ] && {
 	pkgs=0
 	for i in /var/lib/pacman/local/*; do
 		pkgs=$(( pkgs + 1 ))
 	done
 }
 
-command -v xbps-install >/dev/null 2>&1 && {
+[ -d /var/db/xbps ] && {
 	pkgs=0
 	for i in /var/db/xbps/*; do
 		pkgs=$(( pkgs + 1 ))
