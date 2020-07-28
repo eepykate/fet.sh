@@ -2,9 +2,6 @@
 #
 #  this is my attempt at trying to make a fetch using only posix shell
 #  and as little if none external utilities as I can.
-#
-# shellcheck disable=SC2034
-#
 
 
 ## Terminal
@@ -34,14 +31,21 @@ done
 # horribly inefficient, I know.
 [ -d /var/lib/pacman/local ] && {
 	pkgs=0
-	for i in /var/lib/pacman/local/*; do
+	for _ in /var/lib/pacman/local/*; do
 		pkgs=$(( pkgs + 1 ))
 	done
 }
 
 [ -d /var/db/xbps ] && {
 	pkgs=0
-	for i in /var/db/xbps/*; do
+	for _ in /var/db/xbps/*; do
+		pkgs=$(( pkgs + 1 ))
+	done
+}
+
+[ -d /var/db/pkg ] && {
+	pkgs=0
+	for _ in /var/db/pkg/*/*; do
 		pkgs=$(( pkgs + 1 ))
 	done
 }
