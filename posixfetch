@@ -51,7 +51,7 @@ done
 }
 
 print() {
-	printf '\033[38;05;16m%8s\033[0m | %s\n' "$1" "$2"
+	printf '\033[35m%8s\033[0m | %s\n' "$1" "$2"
 }
 
 print os "$ID"
