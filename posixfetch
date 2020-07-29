@@ -38,7 +38,7 @@ done
 
 [ -d /var/db/xbps ] && {
 	pkgs=0
-	for _ in /var/db/xbps/*; do
+	for _ in /var/db/xbps/.*; do
 		pkgs=$(( pkgs + 1 ))
 	done
 }
