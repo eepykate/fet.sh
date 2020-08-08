@@ -1,3 +1,3 @@
-fetch written in POSIX shell with no external utilities
+fetch written in POSIX shell with no external commands
 
-![](http://0x0.st/ixNU.png)
+![](http://0x0.st/i3yK.png)

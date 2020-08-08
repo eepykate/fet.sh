@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 #  this is my attempt at trying to make a fetch using only posix shell
-#  and as little if none external utilities as I can.
-
+#   without any external commands
+#
 
 ## Terminal
 ppid() {
@@ -26,6 +26,55 @@ done
 
 ## Distro
 . /etc/os-release   # lol EZ
+
+## Memory
+while read -r line; do
+	case $line in
+		MemTotal*) mem="${line##*: }"; break;;
+	esac
+done < /proc/meminfo
+mem="${mem##*  }"
+mem="${mem%% *}"
+
+mem="$(( mem / 1000 ))"
+
+## Processor
+# can't really test on AMD. Please make an issue if it doesn't work
+while read -r line; do
+	case $line in
+		vendor_id*) vendor="${line##*: }";;
+		model\ name*) cpu="${line##*: }"; break;;
+	esac
+done < /proc/cpuinfo
+vendor="${vendor##*Authentic}"
+vendor="${vendor##*Genuine}"
+cpu="${cpu##*) }"
+cpu="${cpu%% @*}"
+cpu="${cpu##CPU }"
+cpu="${cpu%% CPU}"
+
+## Uptime
+# the simple math is shamefully stolen from aosync
+IFS=. read -r uptime _ < /proc/uptime
+d="$((uptime / 60 / 60 / 24))"
+h="$((uptime / 60 / 60 % 24))"
+m="$((uptime / 60 % 60))"
+
+## Kernel
+read -r version < /proc/version
+set -- $version
+kernel="${3%%-*}"
+
+## GTK
+# why not..?
+while read -r line; do
+	case $line in
+		gtk-theme*) gtk="${line##*=}"; break;;
+	esac
+done < "${XDG_CONFIG_HOME:-$HOME/.config}"/gtk-3.0/settings.ini
+
+## Motherboard // laptop
+read -r model < /sys/devices/virtual/dmi/id/product_name
 
 ## Packages
 # horribly inefficient, I know.
@@ -51,10 +100,16 @@ done
 }
 
 print() {
-	printf '\033[35m%8s\033[0m | %s\n' "$1" "$2"
+	printf '\033[35m%6s\033[0m | %s\n' "$1" "$2"
 }
 
 print os "$ID"
 print sh "${SHELL##*/}"
+print up "${d}d ${h}:${m}"
+[ "$gtk" ] && print gtk "$gtk"
+print cpu "$vendor $cpu"
+print mem "${mem}MB"
+print host "$model"
+print kern "$kernel"
 print term "$term"
 [ "$pkgs" ] && print "pkgs" "$pkgs"
