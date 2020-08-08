@@ -25,21 +25,22 @@ while [ ! "$term" ]; do
 done
 
 ## WM
-# requires the WM to include 'wm'
+# requires the WM to include 'wm' or 'monad' (for you leon)
 pg() {
 	ab=
 	for i in /proc/[0-9]*; do
 		ab="$ab ${i##*/}"
 		read -r a < "$i"/comm
 		case $a in
-			*$1*) echo "$a" "${i##*/}"; break;;
+			*$1*|*${2:-$1}*) echo "$a" "${i##*/}"; break;;
 		esac
 	done
 }
+
 [ "$DISPLAY" ] && {
 	xorg="$(pg Xorg)"
 	xorg="${xorg##* }"
-	aa="$(pg wm)"
+	aa="$(pg wm monad)"
 	# make sure it was started near enough after the X server
 	[ "${aa##* }" -gt "$xorg" ] &&
 		[ "${aa##* }" -lt "$((xorg + 20))" ] &&
