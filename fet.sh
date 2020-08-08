@@ -27,25 +27,31 @@ done
 ## WM
 # requires the WM to include 'wm' or 'monad' (for you leon)
 pg() {
+	# i hate myself for this
+	[ $# = 1 ] && set -- $1 $1 $1 $1 $1
 	ab=
 	for i in /proc/[0-9]*; do
 		ab="$ab ${i##*/}"
 		read -r a < "$i"/comm
 		case $a in
-			*$1*|*${2:-$1}*) echo "$a" "${i##*/}"; break;;
+			*$1*|*$2*|*$3*|*$4*|*$5*) echo "$a" "${i##*/}"; break;;
 		esac
 	done
 }
 
-[ "$DISPLAY" ] && {
+if [ "$XDG_CURRENT_DESKTOP" ]; then
+	wm="$XDG_CURRENT_DESKTOP"
+elif [ "$DESKTOP_SESSION" ]; then
+	wm="$DESKTOP_SESSION"
+elif [ "$DISPLAY" ]; then
 	xorg="$(pg Xorg)"
 	xorg="${xorg##* }"
-	aa="$(pg wm monad)"
+	aa="$(pg wm monad box i3 tile)"
 	# make sure it was started near enough after the X server
 	[ "${aa##* }" -gt "$xorg" ] &&
-		[ "${aa##* }" -lt "$((xorg + 20))" ] &&
+		[ "${aa##* }" -lt "$((xorg + 30))" ] &&
 		wm="${aa%% *}"
-}
+fi
 
 ## Distro
 . /etc/os-release   # lol EZ
