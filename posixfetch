@@ -50,8 +50,10 @@ vendor="${vendor##*Authentic}"
 vendor="${vendor##*Genuine}"
 cpu="${cpu##*) }"
 cpu="${cpu%% @*}"
-cpu="${cpu##CPU }"
 cpu="${cpu%% CPU}"
+cpu="${cpu##CPU }"
+cpu="${cpu##*AMD }"
+cpu="${cpu%% with*}"
 
 ## Uptime
 # the simple math is shamefully stolen from aosync
