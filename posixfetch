@@ -24,6 +24,28 @@ while [ ! "$term" ]; do
 	ppid=$(ppid "$ppid")
 done
 
+## WM
+# requires the WM to include 'wm'
+pg() {
+	ab=
+	for i in /proc/[0-9]*; do
+		ab="$ab ${i##*/}"
+		read -r a < "$i"/comm
+		case $a in
+			*$1*) echo "$a" "${i##*/}"; break;;
+		esac
+	done
+}
+[ "$DISPLAY" ] && {
+	xorg="$(pg Xorg)"
+	xorg="${xorg##* }"
+	aa="$(pg wm)"
+	# make sure it was started near enough after the X server
+	[ "${aa##* }" -gt "$xorg" ] &&
+		[ "${aa##* }" -lt "$((xorg + 20))" ] &&
+		wm="${aa%% *}"
+}
+
 ## Distro
 . /etc/os-release   # lol EZ
 
@@ -102,11 +124,12 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 }
 
 print() {
-	printf '\033[35m%6s\033[0m | %s\n' "$1" "$2"
+	printf '\033[34m%6s\033[0m | %s\n' "$1" "$2"
 }
 
 print os "$ID"
 print sh "${SHELL##*/}"
+[ "$wm" ] && print wm "$wm"
 print up "${d}d ${h}:${m}"
 [ "$gtk" ] && print gtk "$gtk"
 print cpu "$vendor $cpu"

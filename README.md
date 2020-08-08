@@ -1,3 +1,5 @@
 fetch written in POSIX shell with no external commands
 
-![](http://0x0.st/i3yK.png)
+<div align="center">
+<img src="http://0x0.st/i3ty.png" width="393px">
+</div>
