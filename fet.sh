@@ -24,18 +24,20 @@ while [ ! "$term" ]; do
 	ppid=$(ppid "$ppid")
 done
 
-## WM
-# requires the WM to include 'wm' or 'monad' (for you leon)
+## WM/DE
 pg() {
+	unset ab var
 	# i hate myself for this
-	[ $# = 1 ] && set -- $1 $1 $1 $1 $1
-	ab=
+	for i in "$@"; do
+		var="${var:+$var|}*$i*"
+	done
 	for i in /proc/[0-9]*; do
 		ab="$ab ${i##*/}"
 		read -r a < "$i"/comm
-		case $a in
-			*$1*|*$2*|*$3*|*$4*|*$5*) echo "$a" "${i##*/}"; break;;
-		esac
+		# this was sadly the better option...
+		eval "case \$a in
+			$var) echo \"\$a\" \"\${i##*/}\"; break;;
+		esac"
 	done
 }
 
