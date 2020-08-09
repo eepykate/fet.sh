@@ -4,6 +4,9 @@
 #   without any external commands
 #
 
+# supress errors
+exec 2>/dev/null
+
 ## Terminal
 ppid() {
 	while read -r line; do
@@ -21,7 +24,9 @@ while [ ! "$term" ]; do
 		*[Ll]ogin*|*init*) term=linux;;
 		*) term="$name";;
 	esac
+	o="$ppid"
 	ppid=$(ppid "$ppid")
+	[ "$o" = "$ppid" ] && break
 done
 
 ## WM/DE
@@ -85,6 +90,7 @@ cpu="${cpu%% CPU}"
 cpu="${cpu##CPU }"
 cpu="${cpu##*AMD }"
 cpu="${cpu%% with*}"
+cpu="${cpu% *-Core*}"
 
 ## Uptime
 # the simple math is shamefully stolen from aosync
@@ -136,14 +142,14 @@ print() {
 	printf '\033[34m%6s\033[0m | %s\n' "$1" "$2"
 }
 
-print os "$ID"
-print sh "${SHELL##*/}"
+[ "$ID" ] && print os "$ID"
+[ "$SHELL" ] && print sh "${SHELL##*/}"
 [ "$wm" ] && print wm "$wm"
-print up "${d}d ${h}:${m}"
+[ "$m" ] && print up "${d}d ${h}:${m}"
 [ "$gtk" ] && print gtk "$gtk"
-print cpu "$vendor $cpu"
-print mem "${mem}MB"
-print host "$model"
-print kern "$kernel"
-print term "$term"
+[ "$cpu" ] && print cpu "$vendor $cpu"
+[ "$mem" ] && print mem "${mem}MB"
+[ "$model" ] && print host "$model"
+[ "$kernel" ] && print kern "$kernel"
+[ "$term" ] && print term "$term"
 [ "$pkgs" ] && print "pkgs" "$pkgs"
