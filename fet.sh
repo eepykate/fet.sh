@@ -103,6 +103,9 @@ m="$((uptime / 60 % 60))"
 read -r version < /proc/version
 set -- $version
 kernel="${3%%-*}"
+case $version in
+	*Microsoft*) [ "$ID" ] && ID="fake $ID";;
+esac
 
 ## GTK
 # why not..?
