@@ -121,24 +121,18 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 ## Packages
 # horribly inefficient, I know.
 [ -d /var/lib/pacman/local ] && {
-	pkgs=0
-	for _ in /var/lib/pacman/local/*; do
-		pkgs=$(( pkgs + 1 ))
-	done
+	set -- $(echo /var/lib/pacman/local/*)
+	pkgs=$#
 }
 
 [ -d /var/db/xbps ] && {
-	pkgs=0
-	for _ in /var/db/xbps/.*; do
-		pkgs=$(( pkgs + 1 ))
-	done
+	set -- $(echo /var/db/xbps/.*)
+	pkgs=$#
 }
 
 [ -d /var/db/pkg ] && {
-	pkgs=0
-	for _ in /var/db/pkg/*/*; do
-		pkgs=$(( pkgs + 1 ))
-	done
+	set -- $(echo /var/db/pkg/*/*)
+	pkgs=$#
 }
 
 print() {
