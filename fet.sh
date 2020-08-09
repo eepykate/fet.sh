@@ -100,9 +100,8 @@ h="$((uptime / 60 / 60 % 24))"
 m="$((uptime / 60 % 60))"
 
 ## Kernel
-read -r version < /proc/version
-set -- $version
-kernel="${3%%-*}"
+read -r _ _ version _ < /proc/version
+kernel="${version%%-*}"
 case $version in
 	*Microsoft*) [ "$ID" ] && ID="fake $ID";;
 esac
