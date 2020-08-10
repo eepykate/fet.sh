@@ -142,7 +142,7 @@ print() {
 [ "$SHELL" ] && print sh "${SHELL##*/}"
 [ "$wm" ] && print wm "$wm"
 [ "$m" ] && print up "${d}d ${h}:${m}"
-[ "$gtk" ] && print gtk "$gtk"
+[ "$gtk" ] && print gtk "${gtk# }"
 [ "$cpu" ] && print cpu "$vendor $cpu"
 [ "$mem" ] && print mem "${mem}MB"
 [ "$model" ] && print host "$model"
