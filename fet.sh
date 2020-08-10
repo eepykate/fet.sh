@@ -26,34 +26,17 @@ while [ ! "$term" ]; do
 done
 
 ## WM/DE
-pg() {
-	unset ab var
-	# i hate myself for this
-	for i in "$@"; do
-		var="${var:+$var|}*$i*"
-	done
-	for i in /proc/[0-9]*; do
-		ab="$ab ${i##*/}"
-		read -r a < "$i"/comm
-		# this was sadly the better option...
-		eval "case \$a in
-			$var) echo \"\$a\" \"\${i##*/}\"; break;;
-		esac"
-	done
-}
-
 if [ "$XDG_CURRENT_DESKTOP" ]; then
 	wm="$XDG_CURRENT_DESKTOP"
 elif [ "$DESKTOP_SESSION" ]; then
 	wm="$DESKTOP_SESSION"
 elif [ "$DISPLAY" ]; then
-	xorg="$(pg Xorg)"
-	xorg="${xorg##* }"
-	aa="$(pg wm monad box i3 tile)"
-	# make sure it was started near enough after the X server
-	[ "${aa##* }" -gt "$xorg" ] &&
-		[ "${aa##* }" -lt "$((xorg + 30))" ] &&
-		wm="${aa%% *}"
+	for i in /proc/*/comm; do
+		read -r c < "$i"
+		case $c in
+			xmonad|qtile|i3*|*box*|*wm*) wm="$c"; break;;
+		esac
+	done
 fi
 
 ## Distro
