@@ -118,21 +118,18 @@ done < "${XDG_CONFIG_HOME:-$HOME/.config}"/gtk-3.0/settings.ini
 read -r model < /sys/devices/virtual/dmi/id/product_name
 
 ## Packages
-# horribly inefficient, I know.
 [ -d /var/lib/pacman/local ] && {
-	set -- $(echo /var/lib/pacman/local/*)
-	pkgs=$#
+	set -- /var/lib/pacman/local/*
 }
 
 [ -d /var/db/xbps ] && {
-	set -- $(echo /var/db/xbps/.*)
-	pkgs=$#
+	set -- /var/db/xbps/.*
 }
 
 [ -d /var/db/pkg ] && {
-	set -- $(echo /var/db/pkg/*/*)
-	pkgs=$#
+	set -- /var/db/pkg/*/*
 }
+[ $# -gt 0 ] && pkgs=$#
 
 print() {
 	printf '\033[34m%6s\033[0m | %s\n' "$1" "$2"
