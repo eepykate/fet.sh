@@ -9,25 +9,20 @@ exec 2>/dev/null
 set --
 
 ## Terminal
-ppid() {
-	while read -r line; do
-		case $line in
-			PPid*) echo "${line##*:?}"; break;;
-		esac
-	done < /proc/"$1"/status
-}
-
 while [ ! "$term" ]; do
-	read -r name < "/proc/${ppid:=$$}/comm"
+	while IFS=':	' read -r key val; do
+		case $key in
+			PPid) ppid=$val; break;;
+		esac
+	done < "/proc/${ppid:-$PPID}/status"
+
+	read -r name < "/proc/$ppid/comm"
 	case $name in
 		*sh) ;;
 		"${0##*/}") ;;
 		*[Ll]ogin*|*init*) term=linux;;
 		*) term="$name";;
 	esac
-	o="$ppid"
-	ppid=$(ppid "$ppid")
-	[ "$o" = "$ppid" ] && break
 done
 
 ## WM/DE
