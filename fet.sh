@@ -135,7 +135,14 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 }
 
 print() {
+	# Disable globbing to make the word-splitting below safe.
+	set -f
+	set -- $*
+
 	printf '\033[34m%6s\033[0m | %s\n' "$1" "$2"
+
+	# Re-enable globbing
+	set +f
 }
 
 [ "$ID" ] && print os "$ID"
