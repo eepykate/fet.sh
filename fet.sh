@@ -6,6 +6,7 @@
 
 # supress errors
 exec 2>/dev/null
+set --
 
 ## Terminal
 ppid() {
