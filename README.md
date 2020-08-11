@@ -4,5 +4,5 @@
 <div align="center">
 fetch written in POSIX shell with no external commands
 <br>
-<img src="screenshot.png" width="300px">
+<img src="screenshot.png" width="250px">
 </div>
