@@ -74,9 +74,8 @@ cpu="${cpu% *-Core*}"
 ## Uptime
 # the simple math is shamefully stolen from aosync
 IFS=. read -r uptime _ < /proc/uptime
-d="$((uptime / 60 / 60 / 24))"
-h="$((uptime / 60 / 60 % 24))"
-m="$((uptime / 60 % 60))"
+d=$((uptime / 60 / 60 / 24))
+up=$(printf %02d:%02d $((uptime / 60 / 60 % 24)) $((uptime / 60 % 60)))
 
 ## Kernel
 read -r _ _ version _ < /proc/version
@@ -109,7 +108,7 @@ print() {
 [ "$ID" ] && print os "$ID"
 [ "$SHELL" ] && print sh "${SHELL##*/}"
 [ "$wm" ] && print wm "$wm"
-[ "$m" ] && print up "${d}d ${h}:${m}"
+[ "$d" ]  && print up "${d}d $up"
 [ "$gtk" ] && print gtk "${gtk# }"
 [ "$cpu" ] && print cpu "$vendor $cpu"
 [ "$mem" ] && print mem "${mem}MB"
