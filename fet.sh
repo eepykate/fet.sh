@@ -34,7 +34,7 @@ elif [ "$DISPLAY" ]; then
 	for i in /proc/*/comm; do
 		read -r c < "$i"
 		case $c in
-			xmonad|qtile|i3*|*box*|*wm*) wm="$c"; break;;
+			awesome|xmonad|qtile|i3*|*box*|*wm*) wm="$c"; break;;
 		esac
 	done
 fi
