@@ -120,4 +120,9 @@ print host "$model"
 print kern "$kernel"
 print pkgs "$pkgs"
 print term "$term"
-echo
+
+printf '  '
+for i in 1 2 3 4 5 6; do
+	printf '\033[9%sm▅▅' "$i"
+done
+printf '\033[0m\n\n'
