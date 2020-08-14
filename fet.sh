@@ -54,7 +54,6 @@ mem="${mem%% *}"
 mem="$(( mem / 1000 ))"
 
 ## Processor
-# can't really test on AMD. Please make an issue if it doesn't work
 while read -r line; do
 	case $line in
 		vendor_id*) vendor="${line##*: }";;
@@ -63,6 +62,7 @@ while read -r line; do
 done < /proc/cpuinfo
 vendor="${vendor##*Authentic}"
 vendor="${vendor##*Genuine}"
+# This is so messy due to so many inconsistencies in the model names
 cpu="${cpu##*) }"
 cpu="${cpu%% @*}"
 cpu="${cpu%% CPU}"
@@ -85,7 +85,6 @@ case $version in
 esac
 
 ## GTK
-# why not..?
 while read -r line; do
 	case $line in
 		gtk-theme*) gtk="${line##*=}"; break;;
@@ -102,17 +101,23 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 [ $# -gt 0 ] && pkgs=$#
 
 print() {
-	printf '\033[34m%6s\033[0m | %s\n' "$1" "$2"
+	[ "$2" ] && printf '\033[34m%6s\033[0m ~ %s\n' "$1" "$2"
 }
 
-[ "$ID" ] && print os "$ID"
-[ "$SHELL" ] && print sh "${SHELL##*/}"
-[ "$wm" ] && print wm "$wm"
-[ "$d" ]  && print up "${d}d $up"
-[ "$gtk" ] && print gtk "${gtk# }"
-[ "$cpu" ] && print cpu "$vendor $cpu"
-[ "$mem" ] && print mem "${mem}MB"
-[ "$model" ] && print host "$model"
-[ "$kernel" ] && print kern "$kernel"
-[ "$term" ] && print term "$term"
-[ "$pkgs" ] && print "pkgs" "$pkgs"
+
+echo
+read -r host < /etc/hostname
+printf '%7s@%s\n' "$USER" "$host"
+
+print os "$ID"
+print sh "${SHELL##*/}"
+print wm "$wm"
+print up "${d}d $up"
+print gtk "${gtk# }"
+print cpu "$vendor $cpu"
+print mem "${mem}MB"
+print host "$model"
+print kern "$kernel"
+print pkgs "$pkgs"
+print term "$term"
+echo
