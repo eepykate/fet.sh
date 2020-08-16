@@ -49,9 +49,7 @@ while read -r line; do
 	esac
 done < /proc/meminfo
 mem="${mem##*  }"
-mem="${mem%% *}"
-
-mem="$(( mem / 1000 ))"
+mem="$(( ${mem%% *} / 1000 ))"
 
 ## Processor
 while read -r line; do
@@ -76,6 +74,7 @@ cpu="${cpu% *-Core*}"
 IFS=. read -r uptime _ < /proc/uptime
 d=$((uptime / 60 / 60 / 24))
 up=$(printf %02d:%02d $((uptime / 60 / 60 % 24)) $((uptime / 60 % 60)))
+[ "$d" -gt 0 ] && up="${d}d $up"
 
 ## Kernel
 read -r _ _ version _ < /proc/version
@@ -112,7 +111,7 @@ printf '%7s@%s\n' "$USER" "$host"
 print os "$ID"
 print sh "${SHELL##*/}"
 print wm "$wm"
-print up "${d}d $up"
+print up "$up"
 print gtk "${gtk# }"
 print cpu "$vendor $cpu"
 print mem "${mem}MB"
