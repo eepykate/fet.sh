@@ -100,7 +100,7 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 [ $# -gt 0 ] && pkgs=$#
 
 print() {
-	[ "$2" ] && printf '\033[34m%6s\033[0m ~ %s\n' "$1" "$2"
+	[ "$2" ] && printf '\033[3%sm%6s\033[0m ~ %s\n' "${accent:-4}" "$1" "$2"
 }
 
 
