@@ -122,7 +122,7 @@ for i in ${info:-n user os sh wm up gtk cpu mem host kern pkgs term col n}; do
 		wm) print wm "$wm";;
 		up) print up "$up";;
 		gtk) print gtk "${gtk# }";;
-		gpu) print cpu "$vendor $cpu";;
+		cpu) print cpu "$vendor $cpu";;
 		mem) print mem "${mem}MB";;
 		host) print host "$model";;
 		kern) print kern "$kernel";;
