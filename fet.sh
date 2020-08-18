@@ -105,7 +105,7 @@ print() {
 
 
 echo
-read -r host < /etc/hostname
+read -r host < /proc/sys/kernel/hostname
 printf '%7s@%s\n' "$USER" "$host"
 
 print os "$ID"
