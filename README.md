@@ -12,7 +12,7 @@ fetch written in POSIX shell with no external commands
 ### Customization
 `fet.sh` can be configured using environment variables, for example:
 ```
-$ info='os wm sh' fet.sh
+$ info='n os wm sh n' fet.sh
 ```
 Supported options are:
 - `accent` (0-7)

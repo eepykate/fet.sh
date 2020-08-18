@@ -114,9 +114,9 @@ print() {
 
 read -r host < /proc/sys/kernel/hostname
 
-echo
-for i in ${info:-user os sh wm up gtk cpu mem host kern pkgs term col}; do
+for i in ${info:-n user os sh wm up gtk cpu mem host kern pkgs term col n}; do
 	case $i in
+		n) echo;;
 		os) print os "$ID";;
 		sh) print sh "${SHELL##*/}";;
 		wm) print wm "$wm";;
@@ -132,4 +132,3 @@ for i in ${info:-user os sh wm up gtk cpu mem host kern pkgs term col}; do
 		col) col;;
 	esac
 done
-echo
