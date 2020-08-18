@@ -99,29 +99,37 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 [ -d /var/db/pkg ] && set -- /var/db/pkg/*/*
 [ $# -gt 0 ] && pkgs=$#
 
-print() {
-	[ "$2" ] && printf '\033[9%sm%6s\033[0m%b%s\n' "${accent:-4}" "$1" "${separator:- ~ }" "$2"
+col() {
+	printf '  '
+	for i in 1 2 3 4 5 6; do
+		printf '\033[9%sm▅▅' "$i"
+	done
+	printf '\033[0m\n'
 }
 
+print() {
+	[ "$2" ] && printf '\033[9%sm%6s\033[0m%b%s\n' \
+		"${accent:-4}" "$1" "${separator:- ~ }" "$2"
+}
+
+read -r host < /proc/sys/kernel/hostname
 
 echo
-read -r host < /proc/sys/kernel/hostname
-printf '%7s@%s\n' "$USER" "$host"
-
-print os "$ID"
-print sh "${SHELL##*/}"
-print wm "$wm"
-print up "$up"
-print gtk "${gtk# }"
-print cpu "$vendor $cpu"
-print mem "${mem}MB"
-print host "$model"
-print kern "$kernel"
-print pkgs "$pkgs"
-print term "$term"
-
-printf '  '
-for i in 1 2 3 4 5 6; do
-	printf '\033[9%sm▅▅' "$i"
+for i in ${info:-user os sh wm up gtk cpu mem host kern pkgs term col}; do
+	case $i in
+		os) print os "$ID";;
+		sh) print sh "${SHELL##*/}";;
+		wm) print wm "$wm";;
+		up) print up "$up";;
+		gtk) print gtk "${gtk# }";;
+		gpu) print cpu "$vendor $cpu";;
+		mem) print mem "${mem}MB";;
+		host) print host "$model";;
+		kern) print kern "$kernel";;
+		pkgs) print pkgs "$pkgs";;
+		term) print term "$term";;
+		user) printf '%7s@%s\n' "$USER" "$host";;
+		col) col;;
+	esac
 done
-printf '\033[0m\n\n'
+echo
