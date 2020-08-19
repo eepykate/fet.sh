@@ -8,9 +8,9 @@
 exec 2>/dev/null
 set --
 _() {  # [ a = b ] with globbing
-	! case $1 in  # default return is 0 so double negative saves a line
-		$2) return 1
-	esac
+	case $1 in
+		$2) return
+	esac;! :
 }
 
 ## Terminal
