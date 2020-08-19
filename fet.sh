@@ -97,6 +97,7 @@ read -r model < /sys/devices/virtual/dmi/id/product_name
 [ -d /var/lib/pacman/local ] && set -- /var/lib/pacman/local/*
 [ -d /var/db/xbps ] && set -- /var/db/xbps/.*
 [ -d /var/db/pkg ] && set -- /var/db/pkg/*/*
+[ -d /var/db/kiss/installed ] && set -- /var/db/kiss/installed/*
 [ $# -gt 0 ] && pkgs=$#
 
 col() {
