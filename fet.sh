@@ -48,7 +48,8 @@ elif [ "$DISPLAY" ]; then
 fi
 
 ## Distro
-. /etc/os-release   # a common file that has variables about the distro
+o=/etc/os-release
+[ -f $o ] && . $o   # a common file that has variables about the distro
 
 ## Memory
 # loop over lines in /proc/meminfo until it reaches MemTotal,
