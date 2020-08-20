@@ -62,7 +62,7 @@ mem="$(( $2 / 1000 ))MB"
 ## Processor
 while read -r line; do
 	case $line in
-		vendor_id*) vendor="${line##*: }";;
+		vendor_id*) vendor="${line##*: } ";;
 		model\ name*) cpu="${line##*: }"; break;;
 	esac
 done < /proc/cpuinfo
@@ -133,7 +133,7 @@ for i in $info; do
 		wm) print wm "$wm";;
 		up) print up "$up";;
 		gtk) print gtk "${gtk# }";;
-		cpu) print cpu "$vendor $cpu";;
+		cpu) print cpu "$vendor$cpu";;
 		mem) print mem "$mem";;
 		host) print host "$model";;
 		kern) print kern "$kernel";;
