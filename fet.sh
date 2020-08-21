@@ -33,7 +33,7 @@ if [ -e /proc/$$/comm ]; then
 		# get name of binary
 		read -r name < "/proc/$ppid/comm"
 		case $name in
-			*sh|"${0##*/}"|tmux|screen) ;;  # skip shells
+			*sh|"${0##*/}") ;;  # skip shells
 			*[Ll]ogin*|*init*) break;;  # exit when the top is reached
 			*) term="$name"  # anything else can be assumed to be the terminal
 		esac
@@ -47,7 +47,7 @@ if [ -e /proc/$$/comm ]; then
 		for i in /proc/*/comm; do
 			read -r c < "$i"
 			case $c in
-				awesome|xmonad*|qtile|i3*|*box*|*wm*) wm="${c%%-*}"; break;;
+				awesome|xmonad*|qtile|sway|i3*|*box*|*wm*) wm="${c%%-*}"; break;;
 			esac
 		done
 
