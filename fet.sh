@@ -20,6 +20,12 @@ _() {  # [ a = b ] with globbing
 
 ## Distro
 o=/etc/os-release
+
+## Some distros have them located at /usr/lib/os-release; according to freedesktop.org
+if [[ ! -f "$o" ]]; then
+	o=/usr/lib/os-release
+fi
+
 [ -f $o ] && . $o   # a common file that has variables about the distro
 
 if [ -e /proc/$$/comm ]; then
