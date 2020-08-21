@@ -94,49 +94,100 @@ if [ -e /proc/$$/comm ]; then
 
 	read -r host < /proc/sys/kernel/hostname
 elif [ -f /var/run/dmesg.boot ]; then
-## Even by SH standards this is ugly
-# @TODO Clean up
+	# Both OpenBSD and FreeBSD use this file, however they're formatted differently
+	read -r bsd < /var/run/dmesg.boot
+	case $bsd in
+	Open*)
+		## OpenBSD cpu/mem/name
+		while read -r line; do
+			case $line in
+				"real mem"*)
+					# use the pre-formatted value which is in brackets
+					mem=${line##*\(}
+					mem=${mem%\)*}
+				;;
+				# set $cpu to everything before a comma and after the field name
+				cpu0:*)
+					cpu=${line#cpu0: }
+					# Remove excess info after the actual CPU name
+					cpu=${cpu%%,*}
+					# Set the CPU Manufacturer to the first word of the cpu
+					# variable [separated by '(' or ' ']
+					vendor=${cpu%%[\( ]*}
+					# We got all the info we want, stop reading
+					break
+				;;
+				# First 2 words in the file are OpenBSD <version>
+				*) [ "$ID" ] || { set -- $line; ID="$1 $2"; }
+			esac
+		done < /var/run/dmesg.boot
+		[ -d /var/db/pkg ] && set -- /var/db/pkg/* && pkgs=$#
+		read -r host < /etc/myname
+		host=${host%.*}
+	;;
+	# Everything else, assume FreeBSD (first line is ---<<BOOT>> or something)
+	*)
+		# shellcheck source=/dev/null
+		. /etc/rc.conf
+		# shut shellcheck up without disabling the warning
+		host=${hostname:-}
 
-# Both OpenBSD and FreeBSD use this file, however they're formatted differently
-read -r open < /var/run/dmesg.boot
-case $open in
-Open*)
-	## OpenBSD cpu/mem/name
+		while read -r line; do
+			case $line in
+				# Ignore useless lines at the top
+				-*|'  '*) ;;
+				*trademark*) ;;
+
+				# os version
+				FreeBSD*)
+					# If the OS is already set, no need to set it again
+					[ "$ID" ] && continue
+					ID="${line%%-R*}"
+				;;
+
+				CPU:*)
+					cpu=${cpu#CPU: }
+					# Remove excess info from after the actual CPU name
+					cpu=${line%\(*}
+				;;
+				*Origin=*)
+					# CPU Manufacturer
+					vendor=${line#*Origin=\"}
+					vendor="${vendor%%\"*} "
+				;;
+
+				"real memory"*)
+					# Get the pre-formatted amount which is inside brackets
+					mem=${line##*\(}
+					mem=${mem%\)*}
+					# This appears to be the final thing we need from the file,
+					# no need to read it more.
+					break
+			esac
+		done < /var/run/dmesg.boot
+	;;
+	esac
+elif v=/System/Library/CoreServices/SystemVersion.plist; [ -f "$v" ]; then
+	## Macos
+	# make sure this variable is empty as to not break the following loop
+	temp=
 	while read -r line; do
 		case $line in
-			# set $mem to the nicely formatted brackets
-			"real mem"*) mem=${line##*\(}; mem=${mem%\)*};;
-			# set $cpu to everything before a comma and after the field name
-			cpu0:*) cpu=${line##cpu0: }; cpu=${cpu%%,*}
-				vendor=${cpu%%[\( ]*}; break;;
-			# First 2 words in the file are OpenBSD <version>
-			*) [ "$ID" ] || { set -- $line; ID="$1 $2"; }
+			# set a variable so the script knows it's on the correct line
+			# (the line after this one is the important one)
+			*ProductVersion*) temp=.;;
+			*)
+				# check if the script is reading the derired line, if not
+				# don't do anything
+				[ "$temp" ] || continue
+				# Remove everything before and including the first '>'
+				ID=${line#*>}
+				# Remove the other side of the XML tag, and insert the actual OS name
+				ID="MacOS ${ID%<*}"
+				# We got the info we want, end the loop.
+				break
 		esac
-	done < /var/run/dmesg.boot
-	[ -d /var/db/pkg ] && set -- /var/db/pkg/* && pkgs=$#
-	read -r host < /etc/myname
-	host=${host%.*}
-;;
-# Everything else, assume FreeBSD (first line is ---<<BOOT>> or something)
-*)
-	. /etc/rc.conf
-	host=$hostname
-	while read -r line; do
-		case $line in
-			# Ignore useless lines at the top
-			-*|'  '*) ;;
-			*trademark*) ;;
-			# os version
-			FreeBSD*) [ "$ID" ] || { set -- $line; ID="$1 ${2%-*}"; };;
-			# cpu
-			CPU:*) cpu=${line%\(*}; cpu=${cpu#CPU: };;
-			*Origin=*) vendor=${line#*Origin=\"}; vendor="${vendor%%\"*} ";;
-			# Memory
-			"real memory"*) mem=${line##*\(}; mem=${mem%\)*}; break
-		esac
-	done < /var/run/dmesg.boot
-;;
-esac
+	done < "$v"
 fi
 
 ## GTK
