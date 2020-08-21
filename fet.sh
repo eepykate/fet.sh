@@ -94,26 +94,49 @@ if [ -e /proc/$$/comm ]; then
 
 	read -r host < /proc/sys/kernel/hostname
 elif [ -f /var/run/dmesg.boot ]; then
+## Even by SH standards this is ugly
+# @TODO Clean up
+
+# Both OpenBSD and FreeBSD use this file, however they're formatted differently
+read -r open < /var/run/dmesg.boot
+case $open in
+Open*)
 	## OpenBSD cpu/mem/name
 	while read -r line; do
 		case $line in
 			# set $mem to the nicely formatted brackets
-			"real mem"*)
-				mem=${line##*\(}; mem=${mem%\)*}
-			;;
+			"real mem"*) mem=${line##*\(}; mem=${mem%\)*};;
 			# set $cpu to everything before a comma and after the field name
-			cpu0:*)
-				set -- $line; vendor="${2%\(*} "
-				cpu=${line##cpu0: }; cpu=${cpu%%,*}; break
-			;;
+			cpu0:*) cpu=${line##cpu0: }; cpu=${cpu%%,*}
+				vendor=${cpu%%[\( ]*}; break;;
 			# First 2 words in the file are OpenBSD <version>
-			*)
-				[ "$ID" ] || { set -- $line; ID="$1 $2"; }
+			*) [ "$ID" ] || { set -- $line; ID="$1 $2"; }
 		esac
 	done < /var/run/dmesg.boot
 	[ -d /var/db/pkg ] && set -- /var/db/pkg/* && pkgs=$#
 	read -r host < /etc/myname
 	host=${host%.*}
+;;
+# Everything else, assume FreeBSD (first line is ---<<BOOT>> or something)
+*)
+	. /etc/rc.conf
+	host=$hostname
+	while read -r line; do
+		case $line in
+			# Ignore useless lines at the top
+			-*|'  '*) ;;
+			*trademark*) ;;
+			# os version
+			FreeBSD*) [ "$ID" ] || { set -- $line; ID="$1 ${2%-*}"; };;
+			# cpu
+			CPU:*) cpu=${line%\(*}; cpu=${cpu#CPU: };;
+			*Origin=*) vendor=${line#*Origin=\"}; vendor="${vendor%%\"*} ";;
+			# Memory
+			"real memory"*) mem=${line##*\(}; mem=${mem%\)*}; break
+		esac
+	done < /var/run/dmesg.boot
+;;
+esac
 fi
 
 ## GTK
