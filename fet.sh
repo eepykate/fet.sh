@@ -19,8 +19,12 @@ _() {  # [ a = b ] with globbing
 [   "$DESKTOP_SESSION"   ] && wm="$DESKTOP_SESSION"
 
 ## Distro
-o=/etc/os-release
-[ -f $o ] && . $o   # a common file that has variables about the distro
+# freedesktop.org/software/systemd/man/os-release.html
+# a common file that has variables about the distro
+for os in /etc/os-release /usr/lib/os-release; do
+	# some POSIX shells exit when trying to source a file that doesn't exist
+	[ -f $os ] && . $os && break
+done
 
 if [ -e /proc/$$/comm ]; then
 	while [ ! "$term" ]; do
