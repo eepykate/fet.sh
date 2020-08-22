@@ -13,10 +13,9 @@ eq() {  # equals  |  [ a = b ] with globbing
 	esac;! :
 }
 
-## Terminal
-
-[ "$XDG_CURRENT_DESKTOP" ] && wm="$XDG_CURRENT_DESKTOP"
-[   "$DESKTOP_SESSION"   ] && wm="$DESKTOP_SESSION"
+## DE
+wm="$XDG_CURRENT_DESKTOP"
+wm="$DESKTOP_SESSION"
 
 ## Distro
 # freedesktop.org/software/systemd/man/os-release.html
@@ -27,6 +26,7 @@ for os in /etc/os-release /usr/lib/os-release; do
 done
 
 if [ -e /proc/$$/comm ]; then
+	## Terminal
 	while [ ! "$term" ]; do
 		# loop over lines in /proc/pid/status until it reaches PPid
 		# then save that to a variable and exit the file
@@ -193,6 +193,8 @@ elif v=/System/Library/CoreServices/SystemVersion.plist; [ -f "$v" ]; then
 		esac
 	done < "$v"
 fi
+
+eq "$0" "*fetish" && printf 'Step on me daddy\n' && exit
 
 ## GTK
 while read -r line; do
