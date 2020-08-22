@@ -7,7 +7,7 @@
 # supress errors
 exec 2>/dev/null
 set --
-_() {  # [ a = b ] with globbing
+eq() {  # equals  |  [ a = b ] with globbing
 	case $1 in
 		$2) return
 	esac;! :
@@ -31,7 +31,7 @@ if [ -e /proc/$$/comm ]; then
 		# loop over lines in /proc/pid/status until it reaches PPid
 		# then save that to a variable and exit the file
 		while read -r line; do
-			_ "$line" "PPid*" && ppid=${line##*:?} && break
+			eq "$line" "PPid*" && ppid=${line##*:?} && break
 		done < "/proc/${ppid:-$PPID}/status"
 
 		# get name of binary
@@ -59,7 +59,7 @@ if [ -e /proc/$$/comm ]; then
 	# loop over lines in /proc/meminfo until it reaches MemTotal,
 	# then convert the amount (second word) from KB to MB
 	while read -r line; do
-		_ "$line" "MemTotal*" && set -- $line && break
+		eq "$line" "MemTotal*" && set -- $line && break
 	done < /proc/meminfo
 	mem="$(( $2 / 1000 ))MB"
 
@@ -81,7 +81,7 @@ if [ -e /proc/$$/comm ]; then
 	## Kernel
 	read -r _ _ version _ < /proc/version
 	kernel="${version%%-*}"
-	_ "$version" "*Microsoft*" && ID="fake $ID"
+	eq "$version" "*Microsoft*" && ID="fake $ID"
 
 	## Motherboard // laptop
 	read -r model < /sys/devices/virtual/dmi/id/product_name
@@ -196,7 +196,7 @@ fi
 
 ## GTK
 while read -r line; do
-	_ "$line" "gtk-theme*" && gtk="${line##*=}" && break
+	eq "$line" "gtk-theme*" && gtk="${line##*=}" && break
 done < "${XDG_CONFIG_HOME:=$HOME/.config}/gtk-3.0/settings.ini"
 
 # Shorten $cpu and $vendor
