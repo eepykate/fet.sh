@@ -9,7 +9,9 @@ exec 2>/dev/null
 set --
 eq() {  # equals  |  [ a = b ] with globbing
 	case $1 in
+		# if the second argument matches the first, exit normally
 		$2) return
+		# if it doesn't match, reverse the output of `:`, which makes an error
 	esac;! :
 }
 
@@ -211,6 +213,7 @@ cpu="${cpu%% CPU}"
 cpu="${cpu##CPU }"
 cpu="${cpu##*AMD }"
 cpu="${cpu%% with*}"
+cpu="${cpu% *-Core*}"
 
 col() {
 	printf '  '
@@ -233,7 +236,7 @@ for i in $info; do
 		n) echo;;
 		os) print os "$ID";;
 		sh) print sh "${SHELL##*/}";;
-		wm) print wm "$wm";;
+		wm) print wm "${wm##*/}";;
 		up) print up "$up";;
 		gtk) print gtk "${gtk# }";;
 		cpu) print cpu "$vendor$cpu";;
