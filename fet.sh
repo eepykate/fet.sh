@@ -36,8 +36,13 @@ if [ -e /proc/$$/comm ]; then
 			eq "$line" "PPid*" && ppid=${line##*:?} && break
 		done < "/proc/${ppid:-$PPID}/status"
 
+		# Make sure not to do an infinite loop
+		[ "$pppid" = "$ppid" ] && break
+		pppid="$ppid"
+
 		# get name of binary
 		read -r name < "/proc/$ppid/comm"
+
 		case $name in
 			*sh|"${0##*/}") ;;  # skip shells
 			*[Ll]ogin*|*init*) break;;  # exit when the top is reached
