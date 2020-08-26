@@ -51,14 +51,12 @@ if [ -e /proc/$$/comm ]; then
 	done
 
 	## WM/DE
-	# standard variables, mostly used for DEs
-	[ "$DISPLAY" ] && [ ! "$wm" ] &&
-		# non-standard WMs
+	[ ! "$wm" ] &&
 		# loop over all processes and check the binary name
 		for i in /proc/*/comm; do
 			read -r c < "$i"
 			case $c in
-				awesome|xmonad*|qtile|sway|i3|*box*|*wm*) wm="${c%%-*}"; break;;
+				awesome|xmonad*|qtile|sway|i3|[bfo]*box|*wm*) wm="${c%%-*}"; break;;
 			esac
 		done
 
