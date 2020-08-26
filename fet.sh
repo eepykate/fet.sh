@@ -99,6 +99,7 @@ if [ -e /proc/$$/comm ]; then
 	set --
 	[ -d /var/db/kiss/installed ] && set -- /var/db/kiss/installed/*
 	[ -d /var/lib/pacman/local  ] && set -- /var/lib/pacman/local/[0-9a-z]*
+	[ -d /var/lib/dpkg/info ] && set -- /var/lib/dpkg/info/*.list
 	[ -d /var/db/xbps ] && set -- /var/db/xbps/.*
 	[ -d /var/db/pkg  ] && set -- /var/db/pkg/*/*  # gentoo
 	pkgs=${###0}
