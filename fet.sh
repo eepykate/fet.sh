@@ -202,6 +202,9 @@ fi
 
 eq "$0" "*fetish" && printf 'Step on me daddy\n' && exit
 
+# help i dont know if it's a capital consistently
+eq "$wm" "*[Gg][Nn][Oo][Mm][Ee]*" && wm="foot DE"
+
 ## GTK
 while read -r line; do
 	eq "$line" "gtk-theme*" && gtk="${line##*=}" && break
