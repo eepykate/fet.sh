@@ -17,7 +17,7 @@ eq() {  # equals  |  [ a = b ] with globbing
 
 ## DE
 wm="$XDG_CURRENT_DESKTOP"
-wm="$DESKTOP_SESSION"
+[ "$wm" ] || wm="$DESKTOP_SESSION"
 
 ## Distro
 # freedesktop.org/software/systemd/man/os-release.html
