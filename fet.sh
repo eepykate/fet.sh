@@ -89,8 +89,14 @@ if [ -e /proc/$$/comm ]; then
 
 	## Motherboard // laptop
 	read -r model < /sys/devices/virtual/dmi/id/product_name
-	eq "$model" "System *" &&
-		read -r model < /sys/devices/virtual/dmi/id/board_name
+	# invalid model handling
+	case $model in
+		# alternate file with slightly different info
+		# on my HP laptop it has the device model (instead of 'hp notebook')
+		# on my desktop it has the extended motherboard model
+		"System "*|"Default "*)
+			read -r model < /sys/devices/virtual/dmi/id/board_name
+	esac
 
 	## Packages
 	# clean environment, then make every file in the dir an argument,
