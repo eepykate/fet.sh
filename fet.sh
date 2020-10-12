@@ -89,6 +89,8 @@ if [ -e /proc/$$/comm ]; then
 
 	## Motherboard // laptop
 	read -r model < /sys/devices/virtual/dmi/id/product_name
+	eq "$model" "System *" &&
+		read -r model < /sys/devices/virtual/dmi/id/board_name
 
 	## Packages
 	# clean environment, then make every file in the dir an argument,
