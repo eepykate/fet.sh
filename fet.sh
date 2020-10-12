@@ -9,10 +9,9 @@ exec 2>/dev/null
 set --
 eq() {  # equals  |  [ a = b ] with globbing
 	case $1 in
-		# if the second argument matches the first, exit normally
-		$2) return
-		# if it doesn't match, reverse the output of `:`, which makes an error
-	esac;! :
+		$2) ;;
+		*) return 1;;
+	esac
 }
 
 ## DE
