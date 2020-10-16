@@ -88,7 +88,7 @@ if [ -e /proc/$$/comm ]; then
 
 	## Kernel
 	read -r _ _ version _ < /proc/version
-	kernel=${version%%-*}
+	kernel=${version%%-}
 	eq "$version" '*Microsoft*' && ID="fake $ID"
 
 	## Motherboard // laptop
