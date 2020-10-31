@@ -106,11 +106,12 @@ if [ -e /proc/$$/comm ]; then
 	# clean environment, then make every file in the dir an argument,
 	# then save the argument count to $pkgs
 	set --
-	[ -d /var/db/kiss/installed ] && set -- /var/db/kiss/installed/*
-	[ -d /var/lib/pacman/local  ] && set -- /var/lib/pacman/local/[0-9a-z]*
-	[ -d /var/lib/dpkg/info ] && set -- /var/lib/dpkg/info/*.list
-	[ -d /var/db/xbps ] && set -- /var/db/xbps/.*
-	[ -d /var/db/pkg  ] && set -- /var/db/pkg/*/*  # gentoo
+	# kiss, arch, debian, void, gentoo
+	for i in '/var/db/kiss/installed/*'  '/var/lib/pacman/local/[0-9a-z]*' \
+	'/var/lib/dpkg/info/*.list'  '/var/db/xbps/.*'  '/var/db/pkg/*/*'; do
+		set -- $i
+		[ $# -gt 1 ] && break
+	done
 	pkgs=${###0}
 
 	read -r host < /proc/sys/kernel/hostname
