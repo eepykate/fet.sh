@@ -59,6 +59,7 @@ if [ -e /proc/$$/comm ]; then
 		for i in /proc/*/comm; do
 			read -r c < "$i"
 			case $c in
+				*bar*) ;;
 				awesome|xmonad*|qtile|sway|i3|[bfo]*box|*wm*) wm=${c%%-*}; break;;
 			esac
 		done
