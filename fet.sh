@@ -111,9 +111,8 @@ if [ -e /proc/$$/comm ]; then
 	for i in '/var/db/kiss/installed/*'  '/var/lib/pacman/local/[0-9a-z]*' \
 	'/var/lib/dpkg/info/*.list'  '/var/db/xbps/.*'  '/var/db/pkg/*/*'; do
 		set -- $i
-		[ $# -gt 1 ] && break
+		[ $# -gt 1 ] && pkgs=$# && break
 	done
-	pkgs=${###0}
 
 	read -r host < /proc/sys/kernel/hostname
 elif [ -f /var/run/dmesg.boot ]; then
