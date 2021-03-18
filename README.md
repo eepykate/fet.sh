@@ -21,6 +21,7 @@ Supported options are:
 - `accent` (0-7)
 - `info`
 - `separator`
+- `colorblock`
 
 For less simple configuration I recommend editing the script, I tried to keep it simple.
 
