@@ -191,6 +191,7 @@ elif [ -f /var/run/dmesg.boot ]; then
 	esac
 elif v=/System/Library/CoreServices/SystemVersion.plist; [ -f "$v" ]; then
 	## Macos
+	## Distro
 	# make sure this variable is empty as to not break the following loop
 	temp=
 	while read -r line; do
@@ -210,6 +211,46 @@ elif v=/System/Library/CoreServices/SystemVersion.plist; [ -f "$v" ]; then
 				break
 		esac
 	done < "$v"
+
+	## Terminal
+	term=$TERM_PROGRAM
+
+	## WM/DE
+	wm="Quartz Compositor"
+	
+	## Memory
+	mem="$(( $(sysctl -n hw.memsize) / 1024 / 1024 ))MB"
+	
+	## Processor
+	cpu=$(sysctl -n machdep.cpu.brand_string)
+
+	## Uptime
+	uptime=$(sysctl -n kern.boottime | awk '{ print $4 }' | cut -d ',' -f 1)
+	now=$(date +%s)
+	uptime=$(($now - $uptime))
+	d=$(($uptime / 60 / 60 / 24))
+	up=$(printf %02d:%02d $(($uptime / 60 / 60 % 24)) $(($uptime / 60 % 60)))
+	[ "$d" - gt 0 ] && up="${d}d $up"
+
+	## Kernel
+	kernel=$(uname -r)
+
+	## Motherboard // laptop
+	model=$(sysctl -n hw.model)
+
+	## Packages
+	set --
+	# macports
+	if command -v port &> /dev/null; then
+		pkgs=$(port installed | tail -n +2 | wc -l)
+	fi
+	# brew
+	for i in '/usr/local/Cellar/*'; do
+		set -- $i
+		[ $# -gt 1 ] && pkgs=$(( $pkgs + $# )) && break
+	done
+
+	host=$(hostname -f)
 fi
 
 eq "$0" '*fetish' && printf 'Step on me daddy\n' && exit
