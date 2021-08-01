@@ -54,7 +54,7 @@ if [ -e /proc/$$/comm ]; then
 	done
 
 	## WM/DE
-	[ ! "$wm" ] &&
+	[ "$wm" ] ||
 		# loop over all processes and check the binary name
 		for i in /proc/*/comm; do
 			read -r c < "$i"

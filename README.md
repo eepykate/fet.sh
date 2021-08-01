@@ -23,7 +23,7 @@ Supported options are:
 - `separator`
 - `colourblocks`
 
-For less simple configuration I recommend editing the script, I tried to keep it simple.
+For less trivial configuration I recommend editing the script, I tried to keep it simple.
 
 ### Known Issues
 MacOS, BSD, and Android don't show much info.
