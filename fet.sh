@@ -44,7 +44,7 @@ if [ -e /proc/$$/comm ]; then
 
 		case $name in
 			*sh|"${0##*/}") ;;  # skip shells
-			*[Ll]ogin*|*init*|*systemd*) break;;  # exit when the top is reached
+			*[Ll]ogin*|*init|*systemd*) break;;  # exit when the top is reached
 			# anything else can be assumed to be the terminal
 			# this has the side affect of catching tmux, but tmux
 			# detaches from the terminal and therefore ignoring that
