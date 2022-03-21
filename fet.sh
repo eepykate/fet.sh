@@ -99,7 +99,7 @@ if [ -e /proc/$$/comm ]; then
 		# alternate file with slightly different info
 		# on my laptop it has the device model (instead of 'hp notebook')
 		# on my desktop it has the extended motherboard model
-		'System '*|'Default '*)
+		'System '*|'Default '*|'To Be Filled'*)
 			read -r model < /sys/devices/virtual/dmi/id/board_name
 	esac
 
