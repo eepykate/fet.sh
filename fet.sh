@@ -156,10 +156,6 @@ elif [ -f /var/run/dmesg.boot ]; then
 
 		while read -r line; do
 			case $line in
-				# Ignore useless lines at the top
-				-*|'  '*) ;;
-				*trademark*) ;;
-
 				# os version
 				FreeBSD*)
 					# If the OS is already set, no need to set it again
