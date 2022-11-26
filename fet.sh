@@ -4,6 +4,38 @@
 #  a fetch in pure POSIX shell
 #
 
+# help and version argument using getopts
+help() {
+        echo
+        echo " fet.sh [-h|v]"
+        echo
+        echo " options:"
+        echo " -h -- prints help and some options"
+        echo " -v -- prints version"
+        echo
+}
+
+version() {
+        echo
+        echo " fet.sh version 1.9"
+        echo " AUR: 1.2.r1.gd336d54-1"
+        echo " Gentoo: fetsh-1.9"
+        echo " KISS: 1.8"
+        echo " NixOS: 1.9"
+        echo
+}
+
+while getopts "hv" option; do
+   case $option in
+      h)
+         help
+         exit;;
+      v)
+         version
+         exit;;
+   esac
+done
+
 # supress errors
 exec 2>/dev/null
 set --
